@@ -12,7 +12,7 @@ echo "Requesting Installation Access Token..."
 ACCESS_TOKEN=$(
   curl -X POST \
     -H "Accept: application/vnd.github+json" \
-    -H "Authorization: Bearer $(cat jwt)" \
+    -H "Authorization: Bearer ${JWT}" \
     -H "X-GitHub-Api-Version: 2022-11-28" \
     https://api.github.com/app/installations/${INSTALLATION_ID}/access_tokens \
     | jq .token --raw-output
