@@ -7,7 +7,8 @@ pem=$( cat $2 ) # file path of the private key as second argument
 
 now=$(date +%s)
 iat=$((${now} - 60)) # Issues 60 seconds in the past
-exp=$((${now} + 600)) # Expires 10 minutes in the future
+# exp=$((${now} + 600)) # Expires 10 minutes in the future
+exp=$((${now} + 570)) # Expires 9.5 minutes in the future
 
 b64enc() { openssl base64 | tr -d '=' | tr '/+' '_-' | tr -d '\n'; }
 
