@@ -6,7 +6,7 @@ echo "Generating JWT..."
 JWT=$(
   ./generate-github-app-jwt.sh ${CLIENT_ID} ${PRIVATE_KEY_PATH}
 )
-echo "Got JWT: ${#JWT}"
+echo "Got JWT: ${JWT}"
 echo "Installation ID: ${#INSTALLATION_ID}"
 echo "Requesting Installation Access Token..."
 ACCESS_TOKEN_RES=$(
