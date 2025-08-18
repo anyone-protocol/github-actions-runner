@@ -9,26 +9,27 @@ JWT=$(
 echo "Got JWT: ${#JWT}"
 echo "Installation ID: ${#INSTALLATION_ID}"
 echo "Requesting Installation Access Token..."
-ACCESS_TOKEN=$(
+ACCESS_TOKEN_RES=$(
   curl -X POST \
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: Bearer ${JWT}" \
     -H "X-GitHub-Api-Version: 2022-11-28" \
-    https://api.github.com/app/installations/${INSTALLATION_ID}/access_tokens \
-    | jq .token --raw-output
+    https://api.github.com/app/installations/${INSTALLATION_ID}/access_tokens
 )
-echo "Access Token: ${#ACCESS_TOKEN}"
+echo "Access Token Response: ${ACCESS_TOKEN_RES}"
+ACCESS_TOKEN=$(echo $ACCESS_TOKEN_RES | jq .token --raw-output)
+echo "Access Token: ${ACCESS_TOKEN}"
 echo "Org: ${ORG}"
 echo "Requesting Runner Registration Token..."
-REG_TOKEN=$(
+REG_TOKEN_RES=$(
   curl -X POST \
     -H "Accept: application/vnd.github+json" \
     -H "Authorization: token ${ACCESS_TOKEN}" \
     -H "X-GitHub-Api-Version: 2022-11-28" \
-    https://api.github.com/orgs/${ORG}/actions/runners/registration-token \
-    | jq .token --raw-output
+    https://api.github.com/orgs/${ORG}/actions/runners/registration-token
 )
-echo "Registration Token: ${#REG_TOKEN}"
+REG_TOKEN=$(echo $REG_TOKEN_RES | jq .token --raw-output)
+echo "Registration Token: ${REG_TOKEN}"
 echo "Runner Name: ${RUNNER_NAME}"
 ./config.sh --url https://github.com/${ORG} --token ${REG_TOKEN} --name ${RUNNER_NAME}
 
