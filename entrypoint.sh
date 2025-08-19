@@ -6,8 +6,8 @@ echo "Generating JWT..."
 JWT=$(
   ./generate-github-app-jwt.sh ${CLIENT_ID} ${PRIVATE_KEY_PATH}
 )
-echo "Got JWT: ${JWT}"
-echo "Installation ID: ${#INSTALLATION_ID}"
+echo "Got JWT [${#JWT}]"
+echo "Installation ID [${#INSTALLATION_ID}]"
 echo "Requesting Installation Access Token..."
 ACCESS_TOKEN_RES=$(
   curl -X POST \
@@ -16,7 +16,7 @@ ACCESS_TOKEN_RES=$(
     -H "X-GitHub-Api-Version: 2022-11-28" \
     https://api.github.com/app/installations/${INSTALLATION_ID}/access_tokens
 )
-echo "Access Token Response: ${ACCESS_TOKEN_RES}"
+# echo "Access Token Response: ${ACCESS_TOKEN_RES}"
 ACCESS_TOKEN=$(echo $ACCESS_TOKEN_RES | jq .token --raw-output)
 echo "Access Token: ${ACCESS_TOKEN}"
 echo "Org: ${ORG}"
@@ -28,18 +28,20 @@ REG_TOKEN_RES=$(
     -H "X-GitHub-Api-Version: 2022-11-28" \
     https://api.github.com/orgs/${ORG}/actions/runners/registration-token
 )
-echo "Registration Token Response: ${REG_TOKEN_RES}"
+# echo "Registration Token Response: ${REG_TOKEN_RES}"
 REG_TOKEN=$(echo $REG_TOKEN_RES | jq .token --raw-output)
-echo "Registration Token: ${REG_TOKEN}"
+
+echo "Registration Token [${#REG_TOKEN}]"
 echo "Runner Name: ${RUNNER_NAME}"
-# ./config.sh --url https://github.com/${ORG} --token ${REG_TOKEN} --name ${RUNNER_NAME}
 
-# cleanup() {
-#   echo "Removing runner..."
-#   ./config.sh remove --unattended --token ${REG_TOKEN}
-# }
+./config.sh --url https://github.com/${ORG} --token ${REG_TOKEN} --name ${RUNNER_NAME} --ephemeral
 
-# trap 'cleanup; exit 130' INT
-# trap 'cleanup; exit 143' TERM
+cleanup() {
+  echo "Removing runner..."
+  ./config.sh remove --unattended --token ${REG_TOKEN}
+}
 
-# ./run.sh & wait $!
+trap 'cleanup; exit 130' INT
+trap 'cleanup; exit 143' TERM
+
+./run.sh & wait $!
