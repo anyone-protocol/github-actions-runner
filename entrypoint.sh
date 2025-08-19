@@ -28,17 +28,18 @@ REG_TOKEN_RES=$(
     -H "X-GitHub-Api-Version: 2022-11-28" \
     https://api.github.com/orgs/${ORG}/actions/runners/registration-token
 )
+echo "Registration Token Response: ${REG_TOKEN_RES}"
 REG_TOKEN=$(echo $REG_TOKEN_RES | jq .token --raw-output)
 echo "Registration Token: ${REG_TOKEN}"
 echo "Runner Name: ${RUNNER_NAME}"
-./config.sh --url https://github.com/${ORG} --token ${REG_TOKEN} --name ${RUNNER_NAME}
+# ./config.sh --url https://github.com/${ORG} --token ${REG_TOKEN} --name ${RUNNER_NAME}
 
-cleanup() {
-  echo "Removing runner..."
-  ./config.sh remove --unattended --token ${REG_TOKEN}
-}
+# cleanup() {
+#   echo "Removing runner..."
+#   ./config.sh remove --unattended --token ${REG_TOKEN}
+# }
 
-trap 'cleanup; exit 130' INT
-trap 'cleanup; exit 143' TERM
+# trap 'cleanup; exit 130' INT
+# trap 'cleanup; exit 143' TERM
 
-./run.sh & wait $!
+# ./run.sh & wait $!
